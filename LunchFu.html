@@ -1,9 +1,9 @@
 <head>
-  <title>LunchFu</title>
+    <title>LunchFu</title>
 </head>
 
 <body>
-    {{renderPage}}
+{{renderPage}}
 </body>
 
 <template name="createNewOrder">
@@ -13,32 +13,38 @@
         <input type="text" class="input-small" placeholder="End Time" id="endTime"/>
         <input type="text" class="input-small" placeholder="Email Group" id="emailGroup"/>
 
-        <input type="button" class="btn" id="startOrdering" value="Start" />
+        <input type="button" class="btn" id="startOrdering" value="Start"/>
     </form>
 
 </template>
 
 
 <template name="order">
-
+    {{#with order}}
     URL: {{order.restaurantUrl}} <br/>
     End Time: {{order.endTime}} <br/>
     Email Group: {{order.emailGroup}} <br/>
 
     {{#if canOrderMeal}}
     <form class="form-inline">
-        <input type="text" class="input-small" placeholder="Your E-mail" id="email" />
-        <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal" />
-        <input type="button" class="btn" id="confirm" value="GO!!!" />
+        <input type="text" class="input-small" placeholder="Your E-mail" id="email"/>
+        <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal"/>
+        <input type="button" class="btn" id="confirm" value="GO!!!"/>
     </form>
+    {{else}}
+    My order:
+    <form class="form-inline">
+        AAA {{myOrder.email}}: {{myOrder.meal}}
+        <input type="button" class="btn" id="remove" value="Remove"/>
+    </form>
+
     {{/if}}
 
     <ul>
-        {{#each order.meals}}
-            <li>{{email}}: {{meal}}</li>
-        {{else}}
-            You are the FIRST!!!
+        {{#each filteredOrders}}
+        <li>{{email}}: {{meal}}</li>
         {{/each}}
     </ul>
+    {{/with}}
 
 </template>
