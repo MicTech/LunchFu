@@ -67,33 +67,42 @@ Template.createNewOrder.nearbyPubs = function () {
     return Session.get('nearbyPubs');
 };
 
-Template.createNewOrder.events({"click #startOrdering": function (evnt, template) {
-    var hashCode = Random.id();
-    var restaurantName = template.find('#restaurantName').value;
-    var restaurantUrl = template.find('#restaurantUrl').value;
-    var endTime = template.find('#endTime').value;
-    var emailGroup = template.find('#emailGroup').value;
+Template.createNewOrder.events({
+    "click #startOrdering": function (evnt, template) {
+        var hashCode = Random.id();
+        var restaurantName = template.find('#restaurantName').value;
+        var restaurantUrl = template.find('#restaurantUrl').value;
+        var endTime = template.find('#endTime').value;
+        var emailGroup = template.find('#emailGroup').value;
 
-    var id = Orders.insert({
-        hashCode: hashCode,
-        restaurantName: restaurantName,
-        restaurantUrl: restaurantUrl,
-        state: 'active',
-        endTime: endTime,
-        emailGroup: emailGroup,
-        meals: []
-    });
+        var id = Orders.insert({
+            hashCode: hashCode,
+            restaurantName: restaurantName,
+            restaurantUrl: restaurantUrl,
+            state: 'active',
+            endTime: endTime,
+            emailGroup: emailGroup,
+            meals: []
+        });
 
-    var loc = Session.get('loc');
-    if (loc)
-        Pubs.insert({ restaurantName: restaurantName, restaurantUrl: restaurantUrl, loc: loc });
+        var loc = Session.get('loc');
+        if (loc)
+            Pubs.insert({ restaurantName: restaurantName, restaurantUrl: restaurantUrl, loc: loc });
 
-    Session.set('orderId', id);
-    amplify.store(getOwnerParameterName(), true);
-    sendNewOrder(emailGroup, restaurantName, id);
+        Session.set('orderId', id);
+        amplify.store(getOwnerParameterName(), true);
+        sendNewOrder(emailGroup, restaurantName, id);
 
-    Meteor.Router.to('/order/' + id);
-}});
+        Meteor.Router.to('/order/' + id);
+    },
+    'click .selectPub' : function(evnt, template) {
+        evnt.preventDefault();
+        var pub = Spark.getDataContext(evnt.target);
+        if(!pub) return;
+        template.find('#restaurantName').value = pub.restaurantName;
+        template.find('#restaurantUrl').value = pub.restaurantUrl;
+    }
+});
 
 Template.order.isOwner = function () {
     var isOwner = amplify.store(getOwnerParameterName());
