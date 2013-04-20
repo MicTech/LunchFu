@@ -9,3 +9,5 @@ preserve-inputs
 bootstrap
 accounts-twitter
 email
+router
+random
