@@ -10,6 +10,29 @@ Meteor.Router.add({
     '*': 'not_found'
 });
 
+function foundLocation(location) {
+    console.log(location);
+    var position = location.coords.latitude + ',' + location.coords.longitude;
+    var img_url="http://maps.googleapis.com/maps/api/staticmap?center="
+        +position+"&zoom=14&size=400x300&sensor=false";
+    document.getElementById("map").innerHTML="<img src='"+img_url+"'>";
+    Session.set('loc', {lat: location.coords.latitude, lon:location.coords.longitude });
+}
+function noLocation() {
+    console.log("no location");
+}
+
+Meteor.startup(function() {
+    if (Modernizr.geolocation) {
+        navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
+    }
+});
+
+Template.createNewOrder.nearbyPubs = function() {
+    var loc = Session.get('loc');
+    return Pubs.find('{loc: {$near:loc}}');
+};
+
 Template.createNewOrder.events({"click #startOrdering": function (evnt, template) {
     var hashCode = Random.id();
     var restaurantUrl = template.find('#restaurantUrl').value;
@@ -24,7 +47,11 @@ Template.createNewOrder.events({"click #startOrdering": function (evnt, template
         meals: []
     });
 
-    Meteor.Router.to('/order/' + id)
+    var loc = Session.get('loc');
+    if(loc)
+        Pubs.insert({ restaurantUrl:restaurantUrl, loc:loc });
+
+    Meteor.Router.to('/order/' + id);
 }});
 
 Template.order.order = function () {

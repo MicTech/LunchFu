@@ -8,7 +8,8 @@
     "basePackages": {
       "router": {},
       "belt-gravatar": {},
-      "crypto-md5": {}
+      "crypto-md5": {},
+      "modernizr-meteor": {}
     },
     "packages": {
       "router": {
@@ -25,6 +26,11 @@
         "git": "https://github.com/tmeasday/meteor-crypto-md5.git",
         "tag": "v0.0.1",
         "commit": "a0638a6cabfc84e19f2d5828f76aa8f6a0cc8c1a"
+      },
+      "modernizr-meteor": {
+        "git": "https://github.com/ckir/modernizr-meteor.git",
+        "tag": "v2.6.2",
+        "commit": "391ca2a3beff3cd2b0e1099cb2d744b5a2e8a73e"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",

@@ -16,6 +16,16 @@
         <input type="button" class="btn" id="startOrdering" value="Start"/>
     </form>
 
+    Nearby pubs:
+    <ul>
+    {{#each nearbyPubs}}
+        <li>{{restaurantUrl}}</li>
+    {{/each}}
+    </ul>
+
+    <div id="map">
+
+    </div>
 </template>
 
 
