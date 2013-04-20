@@ -41,23 +41,10 @@ Template.order.order = function () {
         var meals = filteredOrders[mealName];
         var emails = meals.map(function(it) {
             return {email: it.email, emailHash: CryptoJS.MD5(it.email.trim().toLowerCase())};
-            //return {email: it.email, emailHash: 'asdfasdfasdfasdf'};
         });
 
         return {mealName: mealName, count: meals.length, emails:emails};
     });
-
-    console.log(filteredOrders);
-    console.log("keys");
-    console.log(keys);
-
-    console.log(groupedOrders);
-
-    for (mealName in filteredOrders) {
-        if(filteredOrders.hasOwnProperty(mealName)) {
-
-        }
-    }
 
     var myOrder = order.meals.filter(function (it) {
         return it.id == mealId;
@@ -91,7 +78,7 @@ Template.order.events({
         Orders.update({ _id: id }, {$pull: {meals: {id: mealId}}});
         amplify.store(getMealIdName(), null);
     },
-    'click #orderSame': function (evnt, template) {
+    'click .orderSame': function (evnt, template) {
         var meal = Spark.getDataContext(evnt.target);
         var email = amplify.store("email");
 
