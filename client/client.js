@@ -49,8 +49,6 @@ function setAutoComplete(nearbyPubs) {
 
         if(pub) {
             restaurantUrlInput.val(pub.restaurantUrl);
-        } else {
-            restaurantUrlInput.val('');
         }
     });
 }
