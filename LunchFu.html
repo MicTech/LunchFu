@@ -33,7 +33,7 @@
 
 
 <template name="order">
-    Name: {{order.order.restaurantName}} <br/>
+    Name: <a href="{{order.order.restaurantUrl}}">{{order.order.restaurantName}}</a> <br/>
     URL: {{order.order.restaurantUrl}} <br/>
     End Time: {{order.order.endTime}} <br/>
     Email Group: {{order.order.emailGroup}} <br/>

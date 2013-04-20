@@ -75,6 +75,7 @@ Template.createNewOrder.events({"click #startOrdering": function (evnt, template
 
     Session.set('orderId', id);
     amplify.store(getOwnerParameterName(), true);
+    sendNewOrder(emailGroup, restaurantName, id);
 
     Meteor.Router.to('/order/' + id);
 }});
@@ -157,9 +158,11 @@ Template.order.events({
     },
     'click #complete': function (evnt, template) {
         updateState('complete');
+        sendNotification();
     },
     'click #discard': function (evnt, template) {
         updateState('discard');
+        sendNotification();
     }
 })
 
@@ -185,4 +188,20 @@ function updateState(state) {
     var id = Session.get('orderId');
     Orders.update({ _id: id }, {$set: {state: state}});
     Session.set('state', state);
+}
+
+function sendNotification() {
+    var orderId = Session.get('orderId');
+    var order = Orders.findOne(orderId);
+    var emails = _.map(order.meals, function (meal) {
+        return meal.email;
+    });
+
+    if(order.state=='complete'){
+        sendCompleteNotice(emails, orderId);
+    }
+
+    if(order.state=='discard'){
+        sendDiscardNotice(emails, orderId);
+    }
 }
