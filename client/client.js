@@ -26,8 +26,32 @@ function loadNearbyPubs(loc) {
             console.log(error);
             return;
         }
-        console.log(result);
+
+        setAutoComplete(result);
+
         Session.set('nearbyPubs', result);
+    });
+}
+
+function setAutoComplete(nearbyPubs) {
+    var restaurantNameInput = $('#restaurantName');
+    var restaurantUrlInput = $('#restaurantUrl');
+
+    autoCompleteList =  _(nearbyPubs).pluck("restaurantName");
+    restaurantNameInput.typeahead({source: autoCompleteList});
+
+    restaurantNameInput.change(function(e) {
+        var name = $(e.target).val();
+
+        var pub = _.find(nearbyPubs, function(p) {
+            return p.restaurantName == name;
+        });
+
+        if(pub) {
+            restaurantUrlInput.val(pub.restaurantUrl);
+        } else {
+            restaurantUrlInput.val('');
+        }
     });
 }
 
