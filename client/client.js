@@ -10,7 +10,6 @@ Meteor.Router.add({
     '*': 'not_found'
 });
 
-var nearbyPubs;
 function foundLocation(location) {
     console.log(location);
     var position = location.coords.latitude + ',' + location.coords.longitude;
@@ -24,7 +23,7 @@ function foundLocation(location) {
             console.log(error);
             return;
         }
-        nearbyPubs = result;
+        console.log(result);
         Session.set('nearbyPubs', result);
     });
 }
