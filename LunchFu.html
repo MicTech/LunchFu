@@ -55,10 +55,11 @@
 
 
 <template name="order">
-    Name: <a href="{{order.order.restaurantUrl}}">{{order.order.restaurantName}}</a> <br/>
-    URL: {{order.order.restaurantUrl}} <br/>
-    End Time: {{order.order.endTime}} <br/>
-    Email Group: {{order.order.emailGroup}} <br/>
+    <h1>Choose your Lunch!</h1>
+    <p>Choose from the offer of <strong>
+    <a href="{{order.order.restaurantUrl}}" target="_blank">{{order.order.restaurantName}}</a></strong>.
+        Our order will be closed at {{order.order.endTime}}
+    </p>
 
     {{#if isActive}}
         {{#if isOwner}}
@@ -68,17 +69,19 @@
         </form>
         {{/if}}
 
+        <h3>My order:</h3>
         {{#if canOrderMeal}}
         <form class="form-inline">
-            <input type="email" class="input-medium" placeholder="Your E-mail" id="email" value="{{defaultEmail}}"/>
-            <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal"/>
-            <input type="button" class="btn" id="confirm" value="GO!!!"/>
+            <input type="email" class="span3" placeholder="Your E-mail" id="email" value="{{defaultEmail}}"/>
+            <input type="text" class="span6" placeholder="Your FOOOOOD" id="meal"/>
+            <input type="button" class="btn" id="confirm" value="Order"/>
         </form>
         {{else}}
-        My order:
         <form class="form-inline">
+            <div class="well  alert-info">
             {{order.myOrder.email}}: {{order.myOrder.meal}}
-            <input type="button" class="btn" id="remove" value="Remove"/>
+            <input type="button" class="btn order-button" id="remove" value="Remove"/>
+            </div>
         </form>
 
         {{/if}}
@@ -95,17 +98,17 @@
         </div>
     {{/if}}
 
-
-    <ul>
+    <h3>What are the others going to eat:</h3>
+    <ul id="meals" class="unstyled">
         {{#each order.groupedOrders}}
-        <li>
-            {{count}}x {{mealName}} -
+        <li class="well">
+            {{count}}x <strong>{{mealName}}</strong>
             {{#each emails}}
-                <img src="http://www.gravatar.com/avatar/{{emailHash}}?s=20" title="{{email}}" alt="{{email}}" />
+                <img src="http://www.gravatar.com/avatar/{{emailHash}}?s=25" title="{{email}}" alt="{{email}}" />
             {{/each}}
 
             {{#if canOrderMeal}}
-                <input type="button" class="btn orderSame" value="Order same"/>
+                <input type="button" class="btn orderSame order-button" value="Order same"/>
             {{/if}}
         </li>
         {{/each}}

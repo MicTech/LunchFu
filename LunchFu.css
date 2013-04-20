@@ -7,3 +7,9 @@
 .jumbo h1 {
     font-size: 70px;
 }
+#meals img {
+    margin-left: 5px;
+}
+.order-button {
+    float: right;
+}
