@@ -13,7 +13,7 @@
         <input type="text" class="input-small" placeholder="End Time" id="endTime"/>
         <input type="text" class="input-small" placeholder="Email Group" id="emailGroup"/>
 
-        <button type="submit" class="btn" id="startOrdering">Start</button>
+        <button class="btn" id="startOrdering">Start</button>
     </form>
 
 </template>
@@ -24,5 +24,19 @@
     URL: {{order.restaurantUrl}} <br/>
     End Time: {{order.endTime}} <br/>
     Email Group: {{order.emailGroup}} <br/>
+
+    <form class="form-inline">
+        <input type="text" class="input-small" placeholder="Your E-mail" id="email" />
+        <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal" />
+        <button class="btn" id="confirm">GO!!!</button>
+    </form>
+
+    <ul>
+        {{#each order.meals}}
+            <li>{{email}}: {{meal}}</li>
+        {{else}}
+            You are the FIRST!!!
+        {{/each}}
+    </ul>
 
 </template>
