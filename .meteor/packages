@@ -12,3 +12,5 @@ email
 router
 random
 amplify
+underscore
+crypto-md5

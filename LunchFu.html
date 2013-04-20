@@ -9,9 +9,9 @@
 <template name="createNewOrder">
 
     <form class="form-inline">
-        <input type="text" class="input-small" placeholder="Restaurant URL" id="restaurantUrl"/>
-        <input type="text" class="input-small" placeholder="End Time" id="endTime"/>
-        <input type="text" class="input-small" placeholder="Email Group" id="emailGroup"/>
+        <input type="text" class="input-medium" placeholder="Restaurant URL" id="restaurantUrl"/>
+        <input type="time" class="input-small" placeholder="End Time" id="endTime"/>
+        <input type="email" class="input-medium" placeholder="Email Group" id="emailGroup"/>
 
         <input type="button" class="btn" id="startOrdering" value="Start"/>
     </form>
@@ -20,31 +20,38 @@
 
 
 <template name="order">
-    {{#with order}}
-    URL: {{order.restaurantUrl}} <br/>
-    End Time: {{order.endTime}} <br/>
-    Email Group: {{order.emailGroup}} <br/>
+    URL: {{order.order.restaurantUrl}} <br/>
+    End Time: {{order.order.endTime}} <br/>
+    Email Group: {{order.order.emailGroup}} <br/>
 
     {{#if canOrderMeal}}
     <form class="form-inline">
-        <input type="text" class="input-small" placeholder="Your E-mail" id="email"/>
+        <input type="email" class="input-medium" placeholder="Your E-mail" id="email" value="{{defaultEmail}}"/>
         <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal"/>
         <input type="button" class="btn" id="confirm" value="GO!!!"/>
     </form>
     {{else}}
     My order:
     <form class="form-inline">
-        AAA {{myOrder.email}}: {{myOrder.meal}}
+        {{order.myOrder.email}}: {{order.myOrder.meal}}
         <input type="button" class="btn" id="remove" value="Remove"/>
     </form>
 
     {{/if}}
 
     <ul>
-        {{#each filteredOrders}}
-        <li>{{email}}: {{meal}}</li>
+        {{#each order.groupedOrders}}
+        <li>
+            {{count}}x {{mealName}} -
+            {{#each emails}}
+                <img src="http://www.gravatar.com/avatar/{{emailHash}}?s=20" alt="{{email}}" />
+            {{/each}}
+
+            {{#if canOrderMeal}}
+                <input type="button" class="btn" id="orderSame" value="Order same"/>
+            {{/if}}
+        </li>
         {{/each}}
     </ul>
-    {{/with}}
 
 </template>

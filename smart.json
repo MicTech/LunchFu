@@ -1,5 +1,7 @@
 {
   "packages": {
-    "router": {}
+    "router": {},
+    "belt-gravatar": {},
+    "crypto-md5": {}
   }
 }
