@@ -13,7 +13,7 @@
         <input type="text" class="input-small" placeholder="End Time" id="endTime"/>
         <input type="text" class="input-small" placeholder="Email Group" id="emailGroup"/>
 
-        <button class="btn" id="startOrdering">Start</button>
+        <input type="button" class="btn" id="startOrdering" value="Start" />
     </form>
 
 </template>
@@ -25,11 +25,13 @@
     End Time: {{order.endTime}} <br/>
     Email Group: {{order.emailGroup}} <br/>
 
+    {{#if canOrderMeal}}
     <form class="form-inline">
         <input type="text" class="input-small" placeholder="Your E-mail" id="email" />
         <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal" />
-        <button class="btn" id="confirm">GO!!!</button>
+        <input type="button" class="btn" id="confirm" value="GO!!!" />
     </form>
+    {{/if}}
 
     <ul>
         {{#each order.meals}}

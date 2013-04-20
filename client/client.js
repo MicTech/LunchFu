@@ -30,11 +30,17 @@ Template.order.order = function () {
     return Orders.findOne(Session.get('orderId'));
 };
 
+Template.order.canOrderMeal = function() {
+    return Session.get('mealId')==undefined;
+}
+
 Template.order.events({
     'click #confirm': function (evnt, template) {
+        var mealId = Random.id();
         var email = template.find('#email').value;
         var meal = template.find('#meal').value;
         var id = Session.get('orderId');
-        Orders.update({ _id: id }, {$push: {meals: {email: email, meal: meal}}});
+        Orders.update({ _id: id }, {$push: {meals: {id: mealId, email: email, meal: meal}}});
+        Session.set('mealId', mealId);
     }
 })
