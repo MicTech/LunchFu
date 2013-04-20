@@ -67,15 +67,6 @@ Template.createNewOrder.nearbyPubs = function () {
     return Session.get('nearbyPubs');
 };
 
-Template.createNewOrder.mapPosition = function() {
-    var loc = Session.get('loc');
-    if (loc) {
-        var position = loc.lat + ',' + loc.lon;
-        return position;
-    }
-    return null;
-};
-
 Template.createNewOrder.events({"click #startOrdering": function (evnt, template) {
     var hashCode = Random.id();
     var restaurantName = template.find('#restaurantName').value;
