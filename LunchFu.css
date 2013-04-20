@@ -1,1 +1,9 @@
-/* CSS declarations go here */
+.marketing {
+    text-align: center;
+}
+.jumbo {
+    padding: 70px 0 70px;
+}
+.jumbo h1 {
+    font-size: 70px;
+}

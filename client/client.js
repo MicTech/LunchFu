@@ -71,7 +71,7 @@ Template.createNewOrder.mapUrl = function() {
     var loc = Session.get('loc');
     if (loc) {
         var position = loc.lat + ',' + loc.lon;
-        return "http://maps.googleapis.com/maps/api/staticmap?center=" + position + "&zoom=14&size=400x300&sensor=false";
+        return "http://maps.googleapis.com/maps/api/staticmap?center=" + position + "&zoom=14&size=300x400&sensor=false";
     }
     return null;
 };
