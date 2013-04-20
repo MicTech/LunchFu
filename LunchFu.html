@@ -24,8 +24,10 @@
     {{/each}}
     </ul>
 
-    <div id="map">
-
+    <div id="mapContainer">
+        {{#if mapUrl}}
+        <img src="{{mapUrl}}" />
+        {{/if}}
     </div>
 </template>
 

@@ -11,13 +11,16 @@ Meteor.Router.add({
 });
 
 function foundLocation(location) {
-    console.log(location);
-    var position = location.coords.latitude + ',' + location.coords.longitude;
-    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
-        + position + "&zoom=14&size=400x300&sensor=false";
-    document.getElementById("map").innerHTML = "<img src='" + img_url + "'>";
     var loc = {lat: location.coords.latitude, lon: location.coords.longitude };
+    console.log(loc);
     Session.set('loc', loc);
+}
+
+function noLocation() {
+    console.log("no location");
+}
+
+function loadNearbyPubs(loc) {
     Meteor.call('getNearbyPubs', loc, function (error, result) {
         if (error) {
             console.log(error);
@@ -27,18 +30,26 @@ function foundLocation(location) {
         Session.set('nearbyPubs', result);
     });
 }
-function noLocation() {
-    console.log("no location");
-}
-
-Meteor.startup(function () {
-    if (Modernizr.geolocation) {
-        navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
-    }
-});
 
 Template.createNewOrder.nearbyPubs = function () {
+    var loc = Session.get('loc');
+    if (Modernizr.geolocation) {
+        if (loc) {
+            loadNearbyPubs(loc);
+        } else {
+            navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
+        }
+    }
     return Session.get('nearbyPubs');
+};
+
+Template.createNewOrder.mapUrl = function() {
+    var loc = Session.get('loc');
+    if (loc) {
+        var position = loc.lat + ',' + loc.lon;
+        return "http://maps.googleapis.com/maps/api/staticmap?center=" + position + "&zoom=14&size=400x300&sensor=false";
+    }
+    return null;
 };
 
 Template.createNewOrder.events({"click #startOrdering": function (evnt, template) {
