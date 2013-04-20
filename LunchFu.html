@@ -9,6 +9,7 @@
 <template name="createNewOrder">
 
     <form class="form-inline">
+        <input type="text" class="input-medium" placeholder="Restaurant Name" id="restaurantName"/>
         <input type="text" class="input-medium" placeholder="Restaurant URL" id="restaurantUrl"/>
         <input type="time" class="input-small" placeholder="End Time" id="endTime"/>
         <input type="email" class="input-medium" placeholder="Email Group" id="emailGroup"/>
@@ -19,7 +20,7 @@
     Nearby pubs:
     <ul>
     {{#each nearbyPubs}}
-        <li>{{restaurantUrl}}</li>
+        <li><a href="{{restaurantUrl}}">{{restaurantName}}</a></li>
     {{/each}}
     </ul>
 
@@ -30,24 +31,46 @@
 
 
 <template name="order">
+    Name: {{order.order.restaurantName}} <br/>
     URL: {{order.order.restaurantUrl}} <br/>
     End Time: {{order.order.endTime}} <br/>
     Email Group: {{order.order.emailGroup}} <br/>
 
-    {{#if canOrderMeal}}
-    <form class="form-inline">
-        <input type="email" class="input-medium" placeholder="Your E-mail" id="email" value="{{defaultEmail}}"/>
-        <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal"/>
-        <input type="button" class="btn" id="confirm" value="GO!!!"/>
-    </form>
-    {{else}}
-    My order:
-    <form class="form-inline">
-        {{order.myOrder.email}}: {{order.myOrder.meal}}
-        <input type="button" class="btn" id="remove" value="Remove"/>
-    </form>
+    {{#if isActive}}
+        {{#if isOwner}}
+        <form class="form-inline">
+            <input type="button" class="btn btn-success" id="complete" value="Complete orders"/>
+            <input type="button" class="btn btn-danger" id="discard" value="Discard"/>
+        </form>
+        {{/if}}
 
+        {{#if canOrderMeal}}
+        <form class="form-inline">
+            <input type="email" class="input-medium" placeholder="Your E-mail" id="email" value="{{defaultEmail}}"/>
+            <input type="text" class="input-medium" placeholder="Your FOOOOOD" id="meal"/>
+            <input type="button" class="btn" id="confirm" value="GO!!!"/>
+        </form>
+        {{else}}
+        My order:
+        <form class="form-inline">
+            {{order.myOrder.email}}: {{order.myOrder.meal}}
+            <input type="button" class="btn" id="remove" value="Remove"/>
+        </form>
+
+        {{/if}}
     {{/if}}
+
+    {{#if isCompleted}}
+        <div class="alert alert-success">
+            Order was completed successfully
+        </div>
+    {{/if}}
+    {{#if isDiscarded}}
+        <div class="alert alert-error">
+            Order was discarded
+        </div>
+    {{/if}}
+
 
     <ul>
         {{#each order.groupedOrders}}

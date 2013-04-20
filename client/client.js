@@ -13,13 +13,13 @@ Meteor.Router.add({
 function foundLocation(location) {
     console.log(location);
     var position = location.coords.latitude + ',' + location.coords.longitude;
-    var img_url="http://maps.googleapis.com/maps/api/staticmap?center="
-        +position+"&zoom=14&size=400x300&sensor=false";
-    document.getElementById("map").innerHTML="<img src='"+img_url+"'>";
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+        + position + "&zoom=14&size=400x300&sensor=false";
+    document.getElementById("map").innerHTML = "<img src='" + img_url + "'>";
     var loc = {lat: location.coords.latitude, lon: location.coords.longitude };
     Session.set('loc', loc);
     Meteor.call('getNearbyPubs', loc, function (error, result) {
-        if(error) {
+        if (error) {
             console.log(error);
             return;
         }
@@ -31,36 +31,47 @@ function noLocation() {
     console.log("no location");
 }
 
-Meteor.startup(function() {
+Meteor.startup(function () {
     if (Modernizr.geolocation) {
         navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
     }
 });
 
-Template.createNewOrder.nearbyPubs = function() {
+Template.createNewOrder.nearbyPubs = function () {
     return Session.get('nearbyPubs');
 };
 
 Template.createNewOrder.events({"click #startOrdering": function (evnt, template) {
     var hashCode = Random.id();
+    var restaurantName = template.find('#restaurantName').value;
     var restaurantUrl = template.find('#restaurantUrl').value;
     var endTime = template.find('#endTime').value;
     var emailGroup = template.find('#emailGroup').value;
 
     var id = Orders.insert({
         hashCode: hashCode,
+        restaurantName: restaurantName,
         restaurantUrl: restaurantUrl,
+        state: 'active',
         endTime: endTime,
         emailGroup: emailGroup,
         meals: []
     });
 
     var loc = Session.get('loc');
-    if(loc)
-        Pubs.insert({ restaurantUrl:restaurantUrl, loc:loc });
+    if (loc)
+        Pubs.insert({ restaurantName: restaurantName, restaurantUrl: restaurantUrl, loc: loc });
+
+    Session.set('orderId', id);
+    amplify.store(getOwnerParameterName(), true);
 
     Meteor.Router.to('/order/' + id);
 }});
+
+Template.order.isOwner = function () {
+    var isOwner = amplify.store(getOwnerParameterName());
+    return  isOwner;
+}
 
 Template.order.order = function () {
     var mealId = amplify.store(getMealIdName());
@@ -68,17 +79,19 @@ Template.order.order = function () {
 
     if (!order) return;
 
+    Session.set('state', order.state);
+
     var filteredOrders = _.groupBy(order.meals, 'meal');
 
     var keys = _.keys(filteredOrders);
 
     var groupedOrders = _.map(keys, function (mealName) {
         var meals = filteredOrders[mealName];
-        var emails = meals.map(function(it) {
+        var emails = meals.map(function (it) {
             return {email: it.email, emailHash: CryptoJS.MD5(it.email.trim().toLowerCase())};
         });
 
-        return {mealName: mealName, count: meals.length, emails:emails};
+        return {mealName: mealName, count: meals.length, emails: emails};
     });
 
     var myOrder = order.meals.filter(function (it) {
@@ -96,6 +109,18 @@ Template.order.canOrderMeal = function () {
     return amplify.store(getMealIdName()) == undefined;
 }
 
+Template.order.isDiscarded = function () {
+    return Session.get('state')=='discard';
+}
+
+Template.order.isCompleted = function () {
+    return Session.get('state')=='complete';
+}
+
+Template.order.isActive = function () {
+    console.log("State:"+Session.get('state'));
+    return Session.get('state')=='active';
+}
 
 Template.order.events({
     'click #confirm': function (evnt, template) {
@@ -118,12 +143,23 @@ Template.order.events({
         var email = amplify.store("email");
 
         template.find('#meal').value = meal.mealName;
+    },
+    'click #complete': function (evnt, template) {
+        updateState('complete');
+    },
+    'click #discard': function (evnt, template) {
+        updateState('discard');
     }
 })
 
 function getMealIdName() {
     return Session.get('orderId') + '_mealId';
 }
+
+function getOwnerParameterName() {
+    return Session.get('orderId') + '_owner';
+}
+
 
 function addMeal(email, meal) {
     var mealId = Random.id();
@@ -132,4 +168,10 @@ function addMeal(email, meal) {
     Session.set('mealId', mealId);
 
     amplify.store(getMealIdName(), mealId);
+}
+
+function updateState(state) {
+    var id = Session.get('orderId');
+    Orders.update({ _id: id }, {$set: {state: state}});
+    Session.set('state', state);
 }
